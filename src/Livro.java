@@ -1,13 +1,11 @@
-package Livro;
-
 import java.util.Arrays;
 
 abstract class Livro {
 
-    public String titulo;
-    public String[] autores;
-    public String editora;
-    public float preco;
+    protected String titulo;
+    protected String[] autores;
+    protected String editora;
+    protected float preco;
 
     public Livro(String titulo, String[] autores, String editora, float preco) {
         this.titulo = titulo;
