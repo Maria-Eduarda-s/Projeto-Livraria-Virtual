@@ -182,16 +182,20 @@ public class LivrariaVirtual {
 
         if(numEletronicos == 0 && numImpressos == 0)
             System.out.println("Não há livros cadastrados");
-        else if (numEletronicos !=0 && numImpressos == 0)
+        else if (numEletronicos !=0 && numImpressos == 0) {
+            System.out.println("Não há livros impressos cadastrados");
             listarLivrosEletronicos();
-        else if (numEletronicos == 0 && numImpressos !=0)
+        }
+        else if (numEletronicos == 0 && numImpressos !=0) {
+            System.out.println("Não há livros eleetrônicos cadastrados");
             listarLivrosImpressos();
+        }
         else {
             //Impressos
-            System.out.println("Impressos:");
+            System.out.println("Livros impressos:");
             listarLivrosImpressos();
             //Eletronicos
-            System.out.println("Eletrônicos:");
+            System.out.println("Livros eletrônicos:");
             listarLivrosEletronicos();
         }
     }
@@ -237,11 +241,9 @@ public class LivrariaVirtual {
             System.out.println("\nMenu:");
             System.out.println("1. Cadastrar livro");
             System.out.println("2. Realizar venda");
-            System.out.println("3. Listar livros impressos");
-            System.out.println("4. Listar livros eletrônicos");
-            System.out.println("5. Listar livros");
-            System.out.println("6. Listar vendas");
-            System.out.println("7. Sair");
+            System.out.println("3. Listar livros");
+            System.out.println("4. Listar vendas");
+            System.out.println("5. Sair");
 
             System.out.print("Escolha uma opção: ");
             opcao = input.nextInt();
@@ -255,24 +257,18 @@ public class LivrariaVirtual {
                     livraria.realizarVenda();
                     break;
                 case 3:
-                    livraria.listarLivrosImpressos();
-                    break;
-                case 4:
-                    livraria.listarLivrosEletronicos();
-                    break;
-                case 5:
                     livraria.listarLivros();
                     break;
-                case 6:
+                case 4:
                     livraria.listarVendas();
                     break;
-                case 7:
-                    System.out.println("Saindo do programa...");
+                case 5:
+                    System.out.println("Saindo do programa");;
                     break;
                 default:
                     System.out.println("Opção inválida, tente novamente.");
             }
-        } while (opcao != 7);
+        } while (opcao != 5);
 
         input.close();
     }
