@@ -5,7 +5,7 @@ public class Venda {
     private static int numVendas = 0;
     private int numero;
     private String cliente;
-    private float valor;
+    private double valor;
     private List<Livro> livros;
 
     public Venda(String cliente, float valor) {
@@ -23,15 +23,17 @@ public class Venda {
         }
     }
 
-    public void listarLivros() {
+    public List<String> listarLivros() {
+        List<String> resultado = new ArrayList<>();
         if (livros.isEmpty()) {
-            System.out.println("Nenhum livro à venda.");
+            resultado.add("Nenhum livro foi vendido.");
         } else {
-            System.out.println("Livros à venda:");
+            resultado.add("Livros comprados:");
             for (Livro livro : livros) {
-                System.out.println(livro);
+                resultado.add(livro.toString());
             }
         }
+        return resultado;
     }
 
     public int getNumero() {
@@ -46,11 +48,11 @@ public class Venda {
         this.cliente = cliente;
     }
 
-    public float getValor() {
+    public double getValor() {
         return valor;
     }
 
-    public void setValor(float valor) {
+    public void setValor(double valor) {
         this.valor = valor;
     }
 }

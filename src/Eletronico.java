@@ -1,4 +1,4 @@
-public class Eletronico extendes Livro{
+public class Eletronico extends Livro {
     private double tamanho;
 
     public Eletronico(String titulo, String[] autores, String editora, double preco, double tamanho) {
@@ -16,6 +16,6 @@ public class Eletronico extendes Livro{
 
     @Override
     public String toString() {
-        return super.toString() + ", O tamanho do arquivo desse livro é : " + tamanho + " KB";
+        return super.toString() + ", Tamanho do arquivo: " + tamanho + " KB";
     }
 }

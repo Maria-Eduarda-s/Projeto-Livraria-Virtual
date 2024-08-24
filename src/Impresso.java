@@ -1,8 +1,9 @@
-public class Impresso {
+public class Impresso extends Livro {
     private double frete;
     private int estoque;
 
-    public Impresso(double frete, int estoque) {
+    public Impresso(String titulo, String[] autores, String editora, double preco, double frete, int estoque) {
+        super(titulo, autores, editora, preco);
         this.frete = frete;
         this.estoque = estoque;
     }
@@ -15,10 +16,6 @@ public class Impresso {
         }
     }
 
-    @Override
-    public String toString() {
-        return "Livro [Frete: " + frete + "\nEstoque:" + estoque + "]";
-    }
 
     public double getFrete() {
         return frete;
@@ -36,4 +33,8 @@ public class Impresso {
         this.estoque = estoque;
     }
 
+    @Override
+    public String toString() {
+        return super.toString() + ", Frete: R$" + frete + ", Estoque: " + estoque;
+    }
 }
