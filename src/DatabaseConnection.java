@@ -1,12 +1,13 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class DatabaseConnection {
 
     private static final String URL = "jdbc:mysql://localhost:3306/Livraria";
-    private static final String USER = "leandro";
-    private static final String PASSWORD = "123456789";
+    private static final String USER = "root";
+    private static final String PASSWORD = "Senha@123";
 
     public static Connection getConnection() throws SQLException {
         try {
@@ -14,6 +15,74 @@ public class DatabaseConnection {
         } catch (ClassNotFoundException e) {
             throw new SQLException("Driver não encontrado: " + e.getMessage(), e);
         }
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+
+        Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+
+        try (Statement statement = connection.createStatement()) {
+            criarTabelaLivro(statement);
+            criarTabelaVenda(statement);
+            criarTabelaVendaLivro(statement);
+            criarTabelaImpresso(statement);
+            criarTabelaEletronico(statement);
+
+            System.out.println("Tabelas criadas/verificadas com sucesso.");
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao criar/verificar tabelas: " + e.getMessage(), e);
+        }
+
+        return connection;
+    }
+
+    private static void criarTabelaLivro(Statement statement) throws SQLException {
+        String sql = "CREATE TABLE IF NOT EXISTS livro ("
+                + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                + "titulo VARCHAR(255) NOT NULL, "
+                + "autores VARCHAR(255) NOT NULL, "
+                + "editora VARCHAR(255) NOT NULL, "
+                + "preco DECIMAL(10, 2) NOT NULL"
+                + ");";
+        statement.execute(sql);
+    }
+
+    private static void criarTabelaVenda(Statement statement) throws SQLException {
+        String sql = "CREATE TABLE IF NOT EXISTS venda ("
+                + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                + "numVendas INT NOT NULL, "
+                + "cliente VARCHAR(255) NOT NULL, "
+                + "valor FLOAT NOT NULL"
+                + ");";
+        statement.execute(sql);
+    }
+
+    private static void criarTabelaVendaLivro(Statement statement) throws SQLException {
+        String sql = "CREATE TABLE IF NOT EXISTS vendalivro ("
+                + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                + "venda_id INT NOT NULL, "
+                + "livro_id INT NOT NULL, "
+                + "INDEX(venda_id), "
+                + "INDEX(livro_id), "
+                + "FOREIGN KEY (venda_id) REFERENCES venda(id), "
+                + "FOREIGN KEY (livro_id) REFERENCES livro(id)"
+                + ");";
+        statement.execute(sql);
+    }
+
+    private static void criarTabelaImpresso(Statement statement) throws SQLException {
+        String sql = "CREATE TABLE IF NOT EXISTS impresso ("
+                + "id INT PRIMARY KEY, "
+                + "frete FLOAT NOT NULL, "
+                + "estoque INT NOT NULL, "
+                + "FOREIGN KEY (id) REFERENCES livro(id)"
+                + ");";
+        statement.execute(sql);
+    }
+
+    private static void criarTabelaEletronico(Statement statement) throws SQLException {
+        String sql = "CREATE TABLE IF NOT EXISTS eletronico ("
+                + "id INT PRIMARY KEY, "
+                + "tamanho INT NOT NULL, "
+                + "FOREIGN KEY (id) REFERENCES livro(id)"
+                + ");";
+        statement.execute(sql);
     }
 }
