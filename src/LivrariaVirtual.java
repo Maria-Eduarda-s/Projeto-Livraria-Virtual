@@ -78,6 +78,14 @@ public class LivrariaVirtual {
                 livroEle.setTamanho(input.nextDouble());
                 input.nextLine();
 
+                EletronicoDAO eletronicoDAO = new EletronicoDAO(connection);
+
+                try {
+                    eletronicoDAO.cadastrarEletronico(livroEle);
+                } catch (SQLException e) {
+                    System.out.println("Erro ao cadastrar livro eletronico: " + e.getMessage());
+                }
+
                 eletronicos[numEletronicos++] = livroEle;
                 break;
 
