@@ -5,7 +5,8 @@ import java.sql.Statement;
 
 public class DatabaseConnection {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/Livraria";
+    private static final String URL = "jdbc:mysql://localhost:3306/";
+    private static final String DATABASE_NAME = "Livraria";
     private static final String USER = "root";
     private static final String PASSWORD = "Senha@123";
 
@@ -16,14 +17,21 @@ public class DatabaseConnection {
             throw new SQLException("Driver não encontrado: " + e.getMessage(), e);
         }
 
-        Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+        // Conectar ao MySQL sem especificar um banco de dados
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             Statement statement = connection.createStatement()) {
+
+            // Criar o banco de dados se não existir
+            String sql = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME;
+            statement.executeUpdate(sql);
+            System.out.println("Banco de dados '" + DATABASE_NAME + "' criado/verificado com sucesso.");
+        }
+
+        // Agora conectar ao banco de dados Livraria
+        Connection connection = DriverManager.getConnection(URL + DATABASE_NAME, USER, PASSWORD);
 
         try (Statement statement = connection.createStatement()) {
-            criarTabelaLivro(statement);
-            criarTabelaVenda(statement);
-            criarTabelaVendaLivro(statement);
-            criarTabelaImpresso(statement);
-            criarTabelaEletronico(statement);
+            criarTabelas(statement);
 
             System.out.println("Tabelas criadas/verificadas com sucesso.");
         } catch (SQLException e) {
@@ -31,6 +39,14 @@ public class DatabaseConnection {
         }
 
         return connection;
+    }
+
+    private static void criarTabelas(Statement statement) throws SQLException {
+        criarTabelaLivro(statement);
+        criarTabelaVenda(statement);
+        criarTabelaVendaLivro(statement);
+        criarTabelaImpresso(statement);
+        criarTabelaEletronico(statement);
     }
 
     private static void criarTabelaLivro(Statement statement) throws SQLException {
