@@ -2,11 +2,14 @@ public class Impresso extends Livro {
     private double frete;
     private int estoque;
 
+
     public Impresso(String titulo, String[] autores, String editora, double preco, double frete, int estoque) {
         super(titulo, autores, editora, preco);
         this.frete = frete;
         this.estoque = estoque;
     }
+
+
 
     public void atualizarEstoque() {
         if (estoque > 0) {

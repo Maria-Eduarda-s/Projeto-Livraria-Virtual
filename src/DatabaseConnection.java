@@ -7,8 +7,8 @@ public class DatabaseConnection {
 
     private static final String URL = "jdbc:mysql://localhost:3306/";
     private static final String DATABASE_NAME = "Livraria";
-    private static final String USER = "root";
-    private static final String PASSWORD = "Senha@123";
+    private static final String USER = "leandro";
+    private static final String PASSWORD = "123456789";
 
     public static Connection getConnection() throws SQLException {
         try {
@@ -17,17 +17,14 @@ public class DatabaseConnection {
             throw new SQLException("Driver não encontrado: " + e.getMessage(), e);
         }
 
-        // Conectar ao MySQL sem especificar um banco de dados
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
              Statement statement = connection.createStatement()) {
 
-            // Criar o banco de dados se não existir
             String sql = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME;
             statement.executeUpdate(sql);
             System.out.println("Banco de dados '" + DATABASE_NAME + "' criado/verificado com sucesso.");
         }
 
-        // Agora conectar ao banco de dados Livraria
         Connection connection = DriverManager.getConnection(URL + DATABASE_NAME, USER, PASSWORD);
 
         try (Statement statement = connection.createStatement()) {
@@ -47,6 +44,7 @@ public class DatabaseConnection {
         criarTabelaVendaLivro(statement);
         criarTabelaImpresso(statement);
         criarTabelaEletronico(statement);
+        criarTriggerReduzirEstoque(statement);
     }
 
     private static void criarTabelaLivro(Statement statement) throws SQLException {
@@ -100,5 +98,17 @@ public class DatabaseConnection {
                 + "FOREIGN KEY (id) REFERENCES livro(id)"
                 + ");";
         statement.execute(sql);
+    }
+
+    private static void criarTriggerReduzirEstoque(Statement statement) throws SQLException {
+        String triggerSql = "CREATE TRIGGER IF NOT EXISTS reduzir_estoque_impresso " +
+                "AFTER INSERT ON vendalivro " +
+                "FOR EACH ROW " +
+                "BEGIN " +
+                "    UPDATE impresso " +
+                "    SET estoque = estoque - 1 " +
+                "    WHERE id = NEW.livro_id; " +
+                "END;";
+        statement.execute(triggerSql);
     }
 }
