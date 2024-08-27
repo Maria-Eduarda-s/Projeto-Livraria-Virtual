@@ -3,7 +3,6 @@ package DAO;
 import model.Livro;
 import model.Venda;
 
-
 import java.sql.*;
 
 public class VendaDAO {
@@ -15,11 +14,15 @@ public class VendaDAO {
     }
 
     public void cadastrarVenda(Venda venda) throws SQLException {
+        // Primeiro, recuperamos o maior número de vendas já registrado no banco
+        int numVendasAtual = obterUltimoNumeroDeVendas() + 1;
+
         String sql = "INSERT INTO venda (numVendas, cliente, valor) VALUES (?, ?, ?)";
         int vendaId;
 
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setInt(1, venda.getNumero());
+            // Definimos o próximo número de vendas
+            stmt.setInt(1, numVendasAtual);
             stmt.setString(2, venda.getCliente());
             stmt.setDouble(3, venda.getValor());
             stmt.executeUpdate();
@@ -35,6 +38,19 @@ public class VendaDAO {
         for (Livro livro : venda.getLivros()) {
             if (livro != null) {
                 cadastrarLivroVenda(vendaId, livro);
+            }
+        }
+    }
+
+    private int obterUltimoNumeroDeVendas() throws SQLException {
+        String sql = "SELECT MAX(numVendas) AS maxNumVendas FROM venda";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("maxNumVendas");
+            } else {
+                return 0; // Caso não haja nenhuma venda registrada, começamos do 0
             }
         }
     }
@@ -74,7 +90,6 @@ public class VendaDAO {
             System.out.println("Erro ao cadastrar livro na venda: " + e.getMessage());
         }
     }
-
 
     public void listarVendas() {
         String sql = "SELECT v.id AS venda_id, v.cliente, v.valor, l.id AS livro_id, l.titulo, l.preco " +
