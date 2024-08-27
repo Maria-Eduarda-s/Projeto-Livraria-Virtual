@@ -40,42 +40,67 @@ public class VendaDAO {
     }
 
     private void cadastrarLivroVenda(int vendaId, Livro livro) throws SQLException {
-        String sqlVerificarEstoque = "SELECT i.id, i.estoque FROM impresso i " +
+        String sqlVerificarEstoqueImpresso = "SELECT i.id, i.estoque FROM impresso i " +
                 "JOIN livro l ON i.id = l.id " +
-                "WHERE l.titulo = ? AND l.preco = ?";
+                "WHERE l.id = ?";
+
+        String sqlVerificarEstoqueEletronico = "SELECT id FROM eletronico WHERE id = ?";
 
         String sqlInserirVendaLivro = "INSERT INTO vendalivro (venda_id, livro_id) VALUES (?, ?)";
 
-        String sqlLivro = "SELECT id FROM livro WHERE titulo = ? AND preco = ?";
+        String sqlObterLivroId = "SELECT id FROM livro WHERE titulo = ? AND preco = ?";
 
-        try (PreparedStatement stmtVerificarEstoque = connection.prepareStatement(sqlVerificarEstoque)) {
-            stmtVerificarEstoque.setString(1, livro.getTitulo());
-            stmtVerificarEstoque.setDouble(2, livro.getPreco());
+        try (PreparedStatement stmtObterLivroId = connection.prepareStatement(sqlObterLivroId)) {
+            stmtObterLivroId.setString(1, livro.getTitulo());
+            stmtObterLivroId.setDouble(2, livro.getPreco());
 
-            ResultSet rs = stmtVerificarEstoque.executeQuery();
+            ResultSet rsLivro = stmtObterLivroId.executeQuery();
 
-            if (rs.next()) {
-                int livroId = rs.getInt("id");
-                int estoque = rs.getInt("estoque");
+            if (rsLivro.next()) {
+                int livroId = rsLivro.getInt("id");
 
-                if (estoque > 0) {
-                    try (PreparedStatement stmtInserirVenda = connection.prepareStatement(sqlInserirVendaLivro)) {
-                        stmtInserirVenda.setInt(1, vendaId);
-                        stmtInserirVenda.setInt(2, livroId);
-                        stmtInserirVenda.executeUpdate();
+                // Verifica se é um livro impresso
+                try (PreparedStatement stmtVerificarEstoqueImpresso = connection.prepareStatement(sqlVerificarEstoqueImpresso)) {
+                    stmtVerificarEstoqueImpresso.setInt(1, livroId);
+                    ResultSet rsEstoqueImpresso = stmtVerificarEstoqueImpresso.executeQuery();
+
+                    if (rsEstoqueImpresso.next()) {
+                        int estoque = rsEstoqueImpresso.getInt("estoque");
+
+                        if (estoque > 0) {
+                            try (PreparedStatement stmtInserirVenda = connection.prepareStatement(sqlInserirVendaLivro)) {
+                                stmtInserirVenda.setInt(1, vendaId);
+                                stmtInserirVenda.setInt(2, livroId);
+                                stmtInserirVenda.executeUpdate();
+                            }
+                        } else {
+                            System.out.println("Estoque insuficiente para o livro impresso: " + livro.getTitulo());
+                        }
+                        return;
                     }
-                } else {
-                    System.out.println("Estoque insuficiente para o livro: " + livro.getTitulo());
+                }
+
+                try (PreparedStatement stmtVerificarEstoqueEletronico = connection.prepareStatement(sqlVerificarEstoqueEletronico)) {
+                    stmtVerificarEstoqueEletronico.setInt(1, livroId);
+                    ResultSet rsEstoqueEletronico = stmtVerificarEstoqueEletronico.executeQuery();
+
+                    if (rsEstoqueEletronico.next()) {
+                        try (PreparedStatement stmtInserirVenda = connection.prepareStatement(sqlInserirVendaLivro)) {
+                            stmtInserirVenda.setInt(1, vendaId);
+                            stmtInserirVenda.setInt(2, livroId);
+                            stmtInserirVenda.executeUpdate();
+                        }
+                    } else {
+                        System.out.println("Livro não encontrado na tabela 'impresso' ou 'eletronico'.");
+                    }
                 }
             } else {
-                throw new SQLException("Livro não encontrado na tabela 'impresso'.");
+                System.out.println("Livro não encontrado na tabela 'livro'.");
             }
         } catch (SQLException e) {
             System.out.println("Erro ao cadastrar livro na venda: " + e.getMessage());
         }
     }
-
-
     public void listarVendas() {
         String sql = "SELECT v.id AS venda_id, v.cliente, v.valor, l.id AS livro_id, l.titulo, l.preco " +
                 "FROM venda v " +
