@@ -115,7 +115,7 @@ public class LivrariaVirtual {
         }
     }
 
-    public void realizarVenda(Connection connection) {
+       public void realizarVenda(Connection connection) {
         Scanner input = new Scanner(System.in);
         System.out.println("Digite o nome do cliente:");
         String nomeCliente = input.nextLine();
@@ -131,6 +131,7 @@ public class LivrariaVirtual {
         Venda venda = new Venda(nomeCliente, quantidade);
         LivroDAO livroDAO = new LivroDAO(connection);
         VendaDAO vendaDAO = new VendaDAO(connection);
+        boolean zerouEstoque = false;
 
         for (int i = 0; i < quantidade; i++) {
             System.out.println("Qual o tipo de livro que você deseja adquirir?");
@@ -177,9 +178,11 @@ public class LivrariaVirtual {
                             Impresso livroSelecionado = listaImpressos.get(indice);
                             if (livroSelecionado.getEstoque() > 0) {
                                 venda.addLivro(livroSelecionado, i);
-                                livroSelecionado.atualizarEstoque(); // Reduz o estoque do livro impresso
+                                livroSelecionado.atualizarEstoque();
+                                System.out.println(livroSelecionado.getEstoque());
                             } else {
                                 System.out.println("Estoque insuficiente para o livro selecionado.");
+                                zerouEstoque = true;
                                 i--;
                             }
                         } else {
@@ -233,7 +236,7 @@ public class LivrariaVirtual {
             }
         }
 
-        if (numVendas < vendas.length) {
+        if (numVendas < vendas.length && zerouEstoque) {
             vendas[numVendas] = venda;
             numVendas++;
 
@@ -245,10 +248,9 @@ public class LivrariaVirtual {
                 System.out.println(venda);
             }
         } else {
-            System.out.println("Não há mais espaço para novas vendas.");
+            System.out.println("Erro na venda, tente novamente.");
         }
     }
-
 
     public void listarLivros(Connection connection) {
         LivroDAO livroDAO = new LivroDAO(connection);
