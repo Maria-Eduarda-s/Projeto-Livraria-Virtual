@@ -84,3 +84,14 @@ Métodos:
 - `listarLivros()`: Exibe todos os livros (impressos e eletrônicos).
 - `listarVendas()`: Exibe todas as vendas realizadas.
 - `main(String[] args)`: Instancia a classe `LivrariaVirtual` e exibe o menu de opções.
+
+
+
+## 📄 Diagrama UML
+Confira o diagrama UML incluído neste repositório para entender a estrutura e a relação entre as classes.
+
+<p align="center">
+<img src="https://github.com/user-attachments/assets/0d1e85a8-7340-40d1-9113-fb5730b19a60" alt="UMLLivrariaVirtual" width="600"/>
+</p>
+
+
