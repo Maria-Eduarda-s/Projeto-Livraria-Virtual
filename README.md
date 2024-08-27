@@ -2,6 +2,10 @@
 
 Este projeto implementa um sistema de gerenciamento de uma livraria virtual na linguagem Java.
 
+## Como Rodar 
+
+- Na classe DatabaseConnection dentro do pacote DAO, altere o usuário e a senha do MySQL para os que você utiliza em sua máquina. Além disso, lembre-se de instalar o MySQL Connector no projeto.
+
 ## 🤝 Colaboradores
 
 - Alice Lima Soares > Classe Livraria Virtual
