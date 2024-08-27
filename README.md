@@ -4,11 +4,17 @@ Este projeto implementa um sistema de gerenciamento de uma livraria virtual na l
 
 ## 🤝 Colaboradores
 
-- Alice Lima Soares
-- Danrley Silva de Jesus
-- Landerson Evangelista Miranda
-- Leandro de Almeida
-- Maria Eduarda Oliveira Sotério
+- Alice Lima Soares > Classe Livraria Virtual
+- Danrley Silva de Jesus > Classe Impresso
+- Landerson Evangelista Miranda > Classe Eletrônico
+- Leandro de Almeida > Classe Venda, Banco de Dados
+- Maria Eduarda Oliveira Sotério > Classe Livro
+- Todos > Correções realizadas durante o desenvolvimento do projeto
+
+## Metodologia
+
+🗂 **Scrum** foi a metodologia utilizada durante o desenvolvimento deste projeto. Utilizamos Scrum para organizar e gerenciar as tarefas, permitindo uma abordagem iterativa e incremental no processo de desenvolvimento. A metodologia ajudou a garantir que o projeto evoluísse de forma estruturada e eficiente.
+
 
 ## 📝 Introdução
 
