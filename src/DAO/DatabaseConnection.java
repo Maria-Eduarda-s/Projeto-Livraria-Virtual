@@ -9,8 +9,8 @@ public class DatabaseConnection {
 
     private static final String URL = "jdbc:mysql://localhost:3306/";
     private static final String DATABASE_NAME = "Livraria";
-    private static final String USER = "leandro";
-    private static final String PASSWORD = "123456789";
+    private static final String USER = "usuario"; // seu usuario no banco de dados
+    private static final String PASSWORD = "senha"; // sua senha no banco de dados
 
     public static Connection getConnection() throws SQLException {
         try {
